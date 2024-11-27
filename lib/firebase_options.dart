@@ -45,30 +45,4 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBTHZUlMno4MlBaloMrdxYH8wSU5HBw9Os',
-    appId: '1:254801666464:web:d03e6783bce182401e84c5',
-    messagingSenderId: '254801666464',
-    projectId: 'payment-tracker-545e6',
-    authDomain: 'payment-tracker-545e6.firebaseapp.com',
-    storageBucket: 'payment-tracker-545e6.firebasestorage.app',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCNPexJPLerNDxgA7h4yzzGkGylbh_uCCo',
-    appId: '1:254801666464:android:784a2e24e3e1eb791e84c5',
-    messagingSenderId: '254801666464',
-    projectId: 'payment-tracker-545e6',
-    storageBucket: 'payment-tracker-545e6.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBiUZrcCwDdIC9Rg7tz3SEieZhaC8KcdvQ',
-    appId: '1:254801666464:ios:46f3cde2e62c68961e84c5',
-    messagingSenderId: '254801666464',
-    projectId: 'payment-tracker-545e6',
-    storageBucket: 'payment-tracker-545e6.firebasestorage.app',
-    iosBundleId: 'com.example.paymentTracker',
-  );
 }
