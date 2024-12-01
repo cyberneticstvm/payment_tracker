@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:payment_tracker/app_config.dart';
+import 'package:payment_tracker/function.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final _firebase = FirebaseAuth.instance;
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
   @override
-  State<LoginScreen> createState() {
+  ConsumerState<LoginScreen> createState() {
     return _LoginScreenState();
   }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _loginForm = GlobalKey<FormState>();
   var _fullName = '';
   var _userName = '';
@@ -37,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submit() async {
+    //final SharedPreferences prefs = await SharedPreferences.getInstance();
     final isValid = _loginForm.currentState!.validate();
     if (!isValid) {
       return;
@@ -67,6 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
             'name': _fullName,
             'email': _userName,
             'password': _password,
+            'role': UserRoles.user.name,
+            'status': UserStatus.pending.name,
             'created_at': Timestamp.now(),
           },
         );

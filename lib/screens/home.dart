@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:payment_tracker/function.dart';
 import 'package:payment_tracker/providers/provider.dart';
 import 'package:payment_tracker/screens/category.dart';
 import 'package:payment_tracker/screens/contributor.dart';
 import 'package:payment_tracker/screens/event.dart';
+import 'package:payment_tracker/screens/reminder.dart';
 import 'package:payment_tracker/widgets/drawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:payment_tracker/widgets/home.dart';
-import 'package:payment_tracker/widgets/reminder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -19,6 +21,39 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  Map<String, dynamic>? _currentUser;
+
+  void _getCurrentUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final u =
+        await MyFunction.currentUser(FirebaseAuth.instance.currentUser!.uid);
+    setState(() {
+      _currentUser = u;
+      prefs.setString('currentUserName', _currentUser?['name']);
+      prefs.setString('currentUserRole', _currentUser?['role']);
+      prefs.setString('currentUserStatus', _currentUser?['status']);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+    MyFunction.checkUser(context);
+  }
+
+  void _message(String msg, Color color) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: color,
+        content: Text(
+          msg,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final indexBottomNavbar = ref.watch(indexBottomNavbarProvider);
@@ -31,11 +66,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       const CategoryScreen(),
       EventScreen(categoryId: categoryId),
       ContributorScreen(eventId: eventId),
-      const Reminder()
+      const ReminderScreen()
     ];
 
     final activePageTitle = [
-      'Home',
+      'Hello ${_currentUser?['name']}',
       'Categories',
       'Events',
       'Contributors',
@@ -47,8 +82,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: Text(activePageTitle[indexBottomNavbar]),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              await prefs.remove('currentUserName');
+              await prefs.remove('currentUserRole');
+              await prefs.remove('currentUserStatus');
               FirebaseAuth.instance.signOut();
+              _message("User logged out successfully", Colors.green);
             },
             icon: Icon(
               Icons.logout,

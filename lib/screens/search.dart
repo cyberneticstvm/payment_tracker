@@ -21,8 +21,6 @@ class _SearchScreenState extends State<SearchScreen> {
   String selectedOption = 'name';
   bool _isFetching = false;
   Stream<QuerySnapshot>? _dataStream;
-  double rtot = 0;
-  double ptot = 0;
 
   void _message(String status, String msg, Color color) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -170,8 +168,17 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  double rtot = 0;
+  double ptot = 0;
+  double bal = 0;
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        //
+      });
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search'),
@@ -325,9 +332,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   width: MediaQuery.of(context).size.width * 0.30,
                 ),
                 Text(
-                  'Balance: ${(rtot - ptot).abs().toString()}',
+                  'Balance: ${bal.abs().toString()}',
                   style: TextStyle(
-                      color: (rtot - ptot >= 0) ? Colors.red : Colors.green,
+                      color: (bal >= 0) ? Colors.red : Colors.green,
                       fontSize: 20),
                 ),
               ],
@@ -335,8 +342,10 @@ class _SearchScreenState extends State<SearchScreen> {
             StreamBuilder(
               stream: _dataStream,
               builder: (context, snapshot) {
+                //final allData = snapshot.data!.docs.map((doc) => doc.data()).toList();
                 rtot = 0;
                 ptot = 0;
+                bal = 0;
                 if (snapshot.hasError) {
                   return const Text('Something went wrong');
                 }
@@ -364,6 +373,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     if (loadedData[index]['type'] == 'payment') {
                       ptot += double.parse(loadedData[index]['amount']);
                     }
+                    bal = rtot - ptot;
                     return Dismissible(
                       key: ValueKey(loadedData[index]),
                       direction: DismissDirection.none,
