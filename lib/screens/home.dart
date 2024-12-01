@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:payment_tracker/function.dart';
@@ -10,6 +11,7 @@ import 'package:payment_tracker/widgets/drawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:payment_tracker/widgets/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cron/cron.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -22,6 +24,29 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   Map<String, dynamic>? _currentUser;
+  final cron = Cron();
+
+  void _scheduleTask() {
+    cron.schedule(Schedule.parse('*/1 * * * *'), () async {
+      await FirebaseFirestore.instance
+          .collection('reminders')
+          .where('user_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .where('reminder_date',
+              isEqualTo: DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day))
+          .get()
+          .then((QuerySnapshot snapshot) {
+        snapshot.docs.forEach((doc) {
+          if (doc['reminder_time'] == TimeOfDay.now().format(context)) {
+            setState(() {
+              //
+            });
+            print('Notification Done!');
+          }
+        });
+      });
+    });
+  }
 
   void _getCurrentUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -37,9 +62,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
-    super.initState();
     _getCurrentUser();
+    _scheduleTask();
     MyFunction.checkUser(context);
+    super.initState();
   }
 
   void _message(String msg, Color color) {
