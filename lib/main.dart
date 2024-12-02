@@ -6,12 +6,22 @@ import 'package:payment_tracker/screens/splash.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+      channelKey: 'ptracker',
+      channelName: 'ptracker-reminder',
+      channelDescription: 'Payment Tracker Reminder',
+      ledColor: Colors.orange.shade800,
+      enableVibration: true,
+    ),
+  ]);
   runApp(
     const ProviderScope(
       child: App(),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:payment_tracker/function.dart';
+import 'package:payment_tracker/notification.dart';
 import 'package:payment_tracker/providers/provider.dart';
 import 'package:payment_tracker/screens/category.dart';
 import 'package:payment_tracker/screens/contributor.dart';
@@ -39,9 +40,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         snapshot.docs.forEach((doc) {
           if (doc['reminder_time'] == TimeOfDay.now().format(context)) {
             setState(() {
-              //
+              PushNotificationService().initializeNotification(doc['title']);
             });
-            print('Notification Done!');
           }
         });
       });

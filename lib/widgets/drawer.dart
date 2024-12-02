@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payment_tracker/function.dart';
+import 'package:payment_tracker/screens/settings.dart';
 import 'package:payment_tracker/screens/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:page_transition/page_transition.dart';
@@ -81,7 +82,14 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
               TextButton(
                 onPressed: () {
-                  //
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.bottomToTop,
+                      child: const SettingScreen(),
+                    ),
+                  );
                 },
                 child: Text(
                   'Settings',

@@ -69,7 +69,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             'user_id': userCredentials.user!.uid,
             'name': _fullName,
             'email': _userName,
-            'password': _password,
             'role': UserRoles.user.name,
             'status': UserStatus.pending.name,
             'created_at': Timestamp.now(),
