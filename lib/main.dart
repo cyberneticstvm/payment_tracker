@@ -20,6 +20,7 @@ void main() async {
       channelDescription: 'Payment Tracker Reminder',
       ledColor: Colors.orange.shade800,
       enableVibration: true,
+      importance: NotificationImportance.High,
     ),
   ]);
   runApp(

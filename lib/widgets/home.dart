@@ -150,7 +150,9 @@ class _HomeState extends ConsumerState<Home> {
                   height: 50,
                 ),
                 Text(
-                  'Add New Category',
+                  (type == 'category')
+                      ? 'Add New Category'
+                      : 'Add New Reminder',
                   style: TextStyle(
                     color: Colors.orange.shade800,
                     fontSize: 20,
